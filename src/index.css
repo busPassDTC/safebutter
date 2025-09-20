@@ -4,12 +4,17 @@
 @tailwind components;
 @tailwind utilities;
 
-:root{
-    background: #110f0f;
+:root {
+  background: #110f0f;
 }
 
-body{
-    display: flex;
-    place-content: center;
-    min-height: 100vh;
+body {
+  min-height: 100vh;
+  min-width: 100vw;
+  margin: 0; /* Remove default margin */
+}
+
+html, body {
+  height: 100%; /* Ensure the body and html fill the viewport */
+  width: 100%;
 }

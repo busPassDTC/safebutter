@@ -182,7 +182,7 @@ const HomePage = () => {
   };
 
   return (
-    <div className="min-h-screen w-full">
+    <div className="min-h-screen">
       <header className="p-4 bg-gray-100 dark:bg-gray-800 flex justify-between items-center">
         <h1 className="text-2xl font-bold">SafeFlow</h1>
         <div className="flex items-center">

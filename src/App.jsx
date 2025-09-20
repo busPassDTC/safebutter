@@ -10,7 +10,7 @@ function App() {
   const { theme } = useContext(ThemeContext);
 
   return (
-    <div className={`bg-white dark:bg-gray-900 text-black dark:text-white w-full md:w-6xl`}>
+    <div className={`bg-white dark:bg-gray-900 text-black dark:text-white w-full`}>
       <Router>
         <Routes>
           <Route 
