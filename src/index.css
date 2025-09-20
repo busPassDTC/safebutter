@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root{
+    background: #110f0f;
+}
+
+body{
+    display: flex;
+    place-content: center;
+    min-height: 100vh;
+}
