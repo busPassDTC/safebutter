@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import { ThemeContext } from './context/ThemeContext';
 import { Toaster } from 'react-hot-toast';
+import PrivateRoute from './components/PrivateRoute';
+import LoginPage from './pages/LoginPage';
 // import LoginPage from './pages/LoginPage';
 // import PrivateRoute from './components/PrivateRoute';
 
@@ -16,13 +18,14 @@ function App() {
           <Route 
             path="/"
             element={
+                // <HomePage />
+              <PrivateRoute>
                 <HomePage />
-              // <PrivateRoute>
-              //   <HomePage />
-              // </PrivateRoute>
+              </PrivateRoute>
+            
             }
           />
-          {/* <Route path="/login" element={<LoginPage />} /> */}
+          <Route path="/login" element={<LoginPage />} />
         </Routes>
       </Router>
         <Toaster

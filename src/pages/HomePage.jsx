@@ -9,6 +9,7 @@ import { FaSun, FaMoon } from "react-icons/fa";
 import conf from "../conf/conf";
 // import { FaUser } from 'react-icons/fa';
 import toast, { Toaster } from "react-hot-toast";
+import Footer from "../components/Footer";
 
 const notifyCreated = () => {
   toast("New note added", {
@@ -85,11 +86,17 @@ const HomePage = () => {
   // };
   const fetchNotes = async () => {
     try {
+      const currentUser = await account.get(); // Replace with your auth system's method to get the user
+    const userId = currentUser.$id; 
+     
       const response = await databases.listDocuments(
-        conf.appwriteDatabaseId,
-        conf.appwriteNotesId,
-        [Query.orderDesc("$createdAt")]
-      );
+      conf.appwriteDatabaseId,
+      conf.appwriteNotesId,
+      [
+        Query.equal("userId", userId),  // Filter for notes where userId matches the current user's ID
+        Query.orderDesc("$createdAt")   // Sort notes by creation date
+      ]
+    );
 
       const userNotes = await Promise.all(
         response.documents.map(async (note) => {
@@ -157,43 +164,46 @@ const HomePage = () => {
   //   closeNoteModal();
   // };
   const handleSaveNote = async (noteToSave) => {
-  const data = { ...noteToSave };
+    const data = { ...noteToSave };
 
-  // Encrypt both title and content
-  data.content = encryptNote(noteToSave.content);
-  data.title = encryptNote(noteToSave.title || "");
+    const currentUser = await account.get(); // Replace with your auth system's method to get the user
+    const userId = currentUser.$id; 
+    data.userId = userId;
+    // Encrypt both title and content
+    data.content = encryptNote(noteToSave.content);
+    data.title = encryptNote(noteToSave.title || "");
+    
 
-  if (!data) {
-    alert("Failed to encrypt");
-    return;
-  }
-
-  try {
-    if (noteToSave.$id) {
-      await databases.updateDocument(
-        conf.appwriteDatabaseId,
-        conf.appwriteNotesId,
-        noteToSave.$id,
-        data
-      );
-      notifyUpdated();
-    } else {
-      await databases.createDocument(
-        conf.appwriteDatabaseId,
-        conf.appwriteNotesId,
-        ID.unique(),
-        data
-      );
-      notifyCreated();
+    if (!data) {
+      alert("Failed to encrypt");
+      return;
     }
-    fetchNotes();
-  } catch (error) {
-    console.error('Failed to save note', error);
-  }
 
-  closeNoteModal();
-};
+    try {
+      if (noteToSave.$id) {
+        await databases.updateDocument(
+          conf.appwriteDatabaseId,
+          conf.appwriteNotesId,
+          noteToSave.$id,
+          data
+        );
+        notifyUpdated();
+      } else {
+        await databases.createDocument(
+          conf.appwriteDatabaseId,
+          conf.appwriteNotesId,
+          ID.unique(),
+          data
+        );
+        notifyCreated();
+      }
+      fetchNotes();
+    } catch (error) {
+      console.error("Failed to save note", error);
+    }
 
+    closeNoteModal();
+  };
 
   const handleDeleteNote = async (noteId) => {
     try {
@@ -218,7 +228,7 @@ const HomePage = () => {
   const closeNoteModal = () => {
     setIsNoteModalOpen(false);
     setSelectedNote(null);
-    notify();
+    // notify();
   };
 
   // const openUserModal = () => {
@@ -272,7 +282,7 @@ const HomePage = () => {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen flex flex-col">
       <header className="p-4 bg-gray-100 dark:bg-gray-800 flex justify-between items-center">
         <h1 className="text-2xl font-bold">SafeFlow</h1>
         <div className="flex items-center">
@@ -346,6 +356,9 @@ const HomePage = () => {
           onClose={closeUserModal}
         />
       )} */}
+      <footer className="bg-gray-800 text-white py-4 mt-16">
+        <Footer />
+      </footer>
     </div>
   );
 };
